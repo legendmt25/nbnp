@@ -1,0 +1,59 @@
+match (test: Test) return test;
+match (test: Test) return test limit 300;
+match (test: Test) return test order by test.quantity;
+
+match (color: Color)<-[:COLOR]-(test: Test) return test, color;
+match (color: Color)<-[:COLOR]-(test: Test) return test, color limit 300;
+
+match (color: Color)<-[r_color:COLOR]-(test: Test) return r_color;
+
+match (color: Color)<-[r_color:COLOR]-(test: Test)
+match (test)-[r_breed: BREED]-(breed: Breed)
+return breed, test, color;
+
+match (color: Color)<-[r_color:COLOR]-(test: Test)
+with color, test, r_color
+match (test)-[r_breed: BREED]-(breed: Breed)
+return breed, test, color;
+
+match (color: Color)<-[r_color:COLOR]-(test: Test)
+match (test)-[r_breed: BREED]-(breed: Breed)
+where breed.name = 'Husky'
+return breed, test, color;
+
+match (color: Color)<-[r_color:COLOR]-(test: Test)
+match (test)-[r_breed: BREED]-(breed: Breed)
+where breed.name = 'Husky'
+return breed, test, color
+order by test.age;
+
+// Get huskies max age
+match (test)-[r_breed: BREED]-(breed: Breed)
+where breed.name = 'Husky'
+return max(test.age);
+
+
+// Error here because we are using aggregation function inside where clause
+match (test: Test)--(breed:Breed)
+where breed.name = 'Husky' and test.age = max(test.age)
+return test;
+
+// To get the age we need to use 'with' to return the result and use it in the next query
+match (test: Test)--(breed:Breed)
+where breed.name = 'Husky'
+with max(test.age) as max_husky_age
+match (test: Test)--(breed: Breed)
+where breed.name = 'Husky' and max_husky_age = test.age
+return test;
+
+// To get all the relations we can connect test to rels with two dashes, without specifying which relations we want to get all relations
+match (test: Test)--(breed:Breed)
+where breed.name = 'Husky'
+with max(test.age) as max_husky_age
+match (rels)--(test: Test)--(breed: Breed)
+where breed.name = 'Husky' and max_husky_age = test.age
+return test, breed, rels;
+
+
+// if we want to get all tests that do not have relation to breed and those that have a relation then we should use optional match but in our example this is impossible
+optional match (test: Test)--(breed: Breed) return test, breed;

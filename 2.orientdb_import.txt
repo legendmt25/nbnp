@@ -1,0 +1,1 @@
+type import_orientdb.sh | docker exec -i orientdb sh

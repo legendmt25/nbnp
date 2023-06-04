@@ -1,0 +1,10 @@
+fields are case insensitive orimentdb?
+class names are case insensitive orimentdb?
+
+ifs need to be nested
+
+in etl json file all classes that are being used need to be specified
+
+serverName and serverPassword need to be provided when using remote dbUrl
+
+changed from plocal dbUrl to remote dbUrl
