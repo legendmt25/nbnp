@@ -1,0 +1,68 @@
+{
+  "source": {
+    "file": {
+      "path": "/orientdb/import/BreedLabels.csv"
+    }
+  },
+  "extractor": {
+    "csv": {}
+  },
+  "transformers": [
+    {
+      "vertex": {
+        "class": "Breed"
+      }
+    },
+    {
+      "field": {
+        "fieldName": "ID",
+        "expression": "BreedID"
+      }
+    },
+    {
+      "field": {
+        "fieldName": "BreedID",
+        "operation": "remove"
+      }
+    },
+    {
+      "field": {
+        "fieldName": "Type",
+        "expression": "if((Type = 1), 'DOG', if((Type = 2), 'CAT', 'NOT_SPECIFIED'))"
+      }
+    },
+    {
+      "field": {
+        "fieldName": "Name",
+        "expression": "BreedName"
+      }
+    },
+    {
+      "field": {
+        "fieldName": "BreedName",
+        "operation": "remove"
+      }
+    }
+  ],
+  "loader": {
+    "orientdb": {
+      "dbURL": "remote:orientdb:2424/nbnp",
+      "serverUser": "root",
+      "serverPassword": "password",
+      "dbType": "graph",
+      "classes": [
+        {
+          "name": "Breed",
+          "extends": "V"
+        }
+      ],
+      "indexes": [
+        {
+          "class": "Breed",
+          "fields": ["ID:integer"],
+          "type": "UNIQUE"
+        }
+      ]
+    }
+  }
+}

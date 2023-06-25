@@ -1,0 +1,62 @@
+{
+  "source": {
+    "file": {
+      "path": "/orientdb/import/StateLabels.csv"
+    }
+  },
+  "extractor": {
+    "csv": {}
+  },
+  "transformers": [
+    {
+      "vertex": {
+        "class": "State"
+      }
+    },
+    {
+      "field": {
+        "fieldName": "ID",
+        "expression": "StateID"
+      }
+    },
+    {
+      "field": {
+        "fieldName": "StateID",
+        "operation": "remove"
+      }
+    },
+    {
+      "field": {
+        "fieldName": "Name",
+        "expression": "StateName"
+      }
+    },
+    {
+      "field": {
+        "fieldName": "StateName",
+        "operation": "remove"
+      }
+    }
+  ],
+  "loader": {
+    "orientdb": {
+      "dbURL": "remote:orientdb:2424/nbnp",
+      "serverUser": "root",
+      "serverPassword": "password",
+      "dbType": "graph",
+      "classes": [
+        {
+          "name": "State",
+          "extends": "V"
+        }
+      ],
+      "indexes": [
+        {
+          "class": "State",
+          "fields": ["ID:integer"],
+          "type": "UNIQUE"
+        }
+      ]
+    }
+  }
+}
