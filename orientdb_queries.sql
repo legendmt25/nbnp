@@ -1,5 +1,5 @@
 select from Test;
-select from Test limit 300;
+select from Test skip 100 limit 50;
 select from Test order by Quantity desc;
 
 select in as color, out as test from HAS_COLOR;
@@ -66,6 +66,13 @@ limit 10; -- size
 match { class: Test, as: pet }-HAS_BREED->{class: Breed, as: breed, where: (Name = 'Husky')},
       { class: State, as: state }<-HAS_STATE-{ class: Test, as: pet }
 return distinct state.Name, state.ID
+
+-- find all states what have huskies and get the number for each state
+match { class: Test, as: pet }-HAS_BREED->{class: Breed, as: breed, where: (Name = 'Husky')},
+      { class: State, as: state }<-HAS_STATE-{ class: Test, as: pet }
+return state.Name as stateName, state.ID as stateId, count(pet) as petCount
+group by state.Name, state.ID
+order by petCount desc
 
 -- find all available husky colors and the count of huskies with that color
 match { class: Test, as: pet }-HAS_BREED->{class: Breed, as: breed, where: (Name = 'Husky')},

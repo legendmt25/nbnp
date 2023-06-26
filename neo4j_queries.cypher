@@ -1,5 +1,5 @@
 match (test: Test) return test;
-match (test: Test) return test limit 300;
+match (test: Test) return test skip 100 limit 50;
 match (test: Test) return test order by test.quantity;
 
 match (color: Color)<-[:COLOR]-(test: Test) return test, color;
@@ -86,6 +86,12 @@ match (pet: Test)-[r_breed: BREED]->(breed: Breed),
 where pet.name = 'Husky'
 return distinct state.name as name, state.id as id;
 
+// find all states what have huskies and get the number for each state
+match (pet: Test)-[r_breed: BREED]->(breed: Breed),
+      (state: State)<-[r_state: STATE]-(pet)
+where pet.name = 'Husky'
+return distinct state.name as name, state.id as id, count(pet) as petCount
+order by petCount desc;
 
 // find all available husky colors and the count of huskies with that color
 match (pet: Test)-[r_breed:BREED]->(breed: Breed),
